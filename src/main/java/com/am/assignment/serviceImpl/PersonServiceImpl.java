@@ -1,8 +1,10 @@
 package com.am.assignment.serviceImpl;
 
+import com.am.assignment.dto.common.CommonResponse;
 import com.am.assignment.dto.person.PersonRequest;
 import com.am.assignment.dto.person.PersonResponse;
 import com.am.assignment.entity.Person;
+import com.am.assignment.exception.CommonException;
 import com.am.assignment.mapper.PersonMapper;
 import com.am.assignment.message.AppMessage;
 import com.am.assignment.repository.PersonRepository;
@@ -16,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -28,7 +31,22 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public PersonResponse add(PersonRequest personRequest) {
-        return personMapper.getPersonResponse(personRepository.save(personMapper.getPerson(personRequest)));
+        if (Objects.isNull(personRequest.getParent())) {
+            Person person = personMapper.getPerson(personRequest);
+            person = personRepository.save(person);
+            return personMapper.getPersonResponse(person);
+        } else {
+            Optional<Person> parentOptional = personRepository.findById(personRequest.getParent().getId());
+            if (!parentOptional.isPresent()) {
+                throw new CommonException(AppMessage.PARENT_NOT_FOUND);
+            }
+            Person parent = parentOptional.get();
+            Person person = personMapper.getPerson(personRequest);
+            person.setAddress(null);
+            person.setParent(parent);
+            person = personRepository.save(person);
+            return personMapper.getPersonResponse(person);
+        }
     }
 
     @Override
@@ -40,13 +58,33 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
+    public ResponseEntity<?> findBy(Long id) {
+        Optional<Person> personOptional = personRepository.findById(id);
+        if (!personOptional.isPresent()) {
+            throw new CommonException(AppMessage.RECORD_NOT_FOUND);
+        }
+        return new ResponseEntity(personOptional.get(), HttpStatus.OK);
+    }
+
+    @Override
     public ResponseEntity<?> update(Long id, PersonRequest personRequest) throws Exception {
         Optional<Person> personOptional = personRepository.findById(id);
         if (!personOptional.isPresent()) {
-            throw new Exception(AppMessage.PERSON_NOT_FOUND);
+            throw new CommonException(AppMessage.RECORD_NOT_FOUND);
         }
         Person person = personMapper.setPerson(personOptional.get(), personRequest);
         PersonResponse personResponse = personMapper.getPersonResponse(personRepository.save(person));
         return new ResponseEntity(personResponse, HttpStatus.ACCEPTED);
+    }
+
+    @Override
+    public ResponseEntity<?> delete(Long id) throws Exception {
+        Optional<Person> personOptional = personRepository.findById(id);
+        if (!personOptional.isPresent()) {
+            throw new CommonException(AppMessage.RECORD_NOT_FOUND);
+        }
+        Person person = personOptional.get();
+        personRepository.deleteById(person.getId());
+        return new ResponseEntity(new CommonResponse(AppMessage.RECORD_REMOVE_SUCCESSFULLY), HttpStatus.ACCEPTED);
     }
 }

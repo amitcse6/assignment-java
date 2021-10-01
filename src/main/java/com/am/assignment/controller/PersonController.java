@@ -35,8 +35,18 @@ public class PersonController {
         return personService.findByPage(pageable);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findBy(@PathVariable Long id) {
+        return personService.findBy(id);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody PersonRequest personRequest) throws Exception {
         return personService.update(id, personRequest);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> update(@PathVariable Long id) throws Exception {
+        return personService.delete(id);
     }
 }

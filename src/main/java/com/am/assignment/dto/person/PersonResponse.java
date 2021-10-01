@@ -6,8 +6,8 @@ import lombok.Data;
 @Data
 public class PersonResponse {
     private Long id;
-    private Long parentId;
     private String firstName;
     private String lastName;
     private AddressResponse address;
+    private PersonResponse parent;
 }

@@ -10,4 +10,6 @@ public interface PersonService {
     PersonResponse add(PersonRequest personRequest);
     Page<PersonResponse> findByPage(Pageable pageable);
     ResponseEntity<?> update(Long id, PersonRequest personRequest) throws Exception;
+    ResponseEntity<?> delete(Long id) throws Exception;
+    ResponseEntity<?> findBy(Long id);
 }
