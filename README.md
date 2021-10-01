@@ -1,23 +1,30 @@
-#1
+#1<br>
 #Configure mysql connection from application.properties file. 
 #spring.datasource.url
 
-#2
+#2<br>
 #Import 'spring-boot-assignment.postman_collection.json' file into your postman
 
-#3
+#3<br>
 #Run your project.
 #Signup & signin required. 'http://localhost:8899/auth/signup', 'http://localhost:8899/auth/signin' 
 
-#4
+#4<br>
 #Parent Add
 #Create a person 'http://localhost:8899/person'
 #[NOTE: if any person is top of a tree then it's parent object would be null]
-#{
-#   "firstName": "Atul1",
-#   "lastName": "Mondol",
-#   "parent": null
-#}
+#
+#   {
+#       "firstName": "Atul1",
+#       "lastName": "Mondol",
+#       "address": {
+#           "street": "Zazira",
+#           "city": "Dhaka",
+#           "zip": "1421"
+#        }
+#       "parent": null
+#   }
+#
 
 #5
 #Child Add
