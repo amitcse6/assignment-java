@@ -63,7 +63,7 @@ public class MyUserDetailsService implements UserDetailsService {
         }
         final UserDetails userDetails = loadUserByUsername(authenticationRequest.getUsername());
         final String jwt = jwtUtil.generateToken(userDetails);
-        AuthenticationResponse authenticationResponse = new AuthenticationResponse(jwt, authenticationRequest.getUsername(), jwt, (1000 * 60) * 60); //1H = (1000 * 60) * 60
+        AuthenticationResponse authenticationResponse = new AuthenticationResponse(jwt, authenticationRequest.getUsername(), (1000 * 60) * 60); //1H = (1000 * 60) * 60
         return authenticationResponse;
     }
 
