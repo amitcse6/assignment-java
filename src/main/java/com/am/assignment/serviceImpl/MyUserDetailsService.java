@@ -57,7 +57,7 @@ public class MyUserDetailsService implements UserDetailsService {
 
     public AuthenticationResponse signin(AuthenticationRequest authenticationRequest) throws Exception {
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), passwordEncoder.encode(authenticationRequest.getPassword())));
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
         } catch (BadCredentialsException e) {
             throw new Exception("Incorrect username or password", e);
         }
@@ -74,7 +74,7 @@ public class MyUserDetailsService implements UserDetailsService {
         }
         user = new User();
         user.setUsername(signupRequest.getUsername());
-        user.setPassword(signupRequest.getPassword());
+        user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
 
         List<Role> roles = Objects.nonNull(signupRequest.getPermissions()) ? signupRequest.getPermissions().stream().map(permission -> roleServiceImpl.findByName(permission)).collect(Collectors.toList()) : new ArrayList<>();
         user.setRoles(roles);
@@ -82,7 +82,7 @@ public class MyUserDetailsService implements UserDetailsService {
 
         SignupResponse signupResponse = new SignupResponse();
         signupResponse.setUsername(user.getUsername());
-        signupResponse.setPassword(passwordEncoder.encode(user.getPassword()));
+        signupResponse.setPassword(user.getPassword());
         signupResponse.setPermissions(signupRequest.getPermissions());
         return signupResponse;
     }
