@@ -3,6 +3,7 @@ package com.am.assignment.controller;
 import com.am.assignment.dto.role.RoleRequest;
 import com.am.assignment.serviceImpl.RoleServiceImpl;
 import io.swagger.annotations.Api;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,8 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/role")
+@RequiredArgsConstructor
 @Api(tags = "RoleController")
+@RequestMapping(value = "/role")
 public class RoleController {
     @Autowired
     private RoleServiceImpl roleServiceImpl;

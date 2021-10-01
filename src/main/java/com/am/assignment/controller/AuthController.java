@@ -8,6 +8,7 @@ import com.am.assignment.dto.signup.SignupResponse;
 import com.am.assignment.entity.User;
 import com.am.assignment.serviceImpl.MyUserDetailsService;
 import io.swagger.annotations.Api;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,12 +16,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/auth")
+@RequiredArgsConstructor
 @Api(tags = "AuthController")
+@RequestMapping(value = "/auth")
 public class AuthController {
 
-    @Autowired
-    private MyUserDetailsService myUserDetailsService;
+    private final MyUserDetailsService myUserDetailsService;
 
     @PostMapping("/signup")
     public ResponseEntity<SignupResponse> signup(@RequestBody SignupRequest signupRequest) throws Exception {

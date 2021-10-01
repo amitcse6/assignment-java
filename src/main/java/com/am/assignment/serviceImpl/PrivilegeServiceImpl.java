@@ -6,6 +6,8 @@ import com.am.assignment.dto.privilege.PrivilegeRequest;
 import com.am.assignment.entity.Privilege;
 import com.am.assignment.exception.CommonException;
 import com.am.assignment.repository.PrivilegeRepository;
+import com.am.assignment.service.PrivilegeService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,18 +18,22 @@ import java.util.Objects;
 
 @Slf4j
 @Service
-public class PrivilegeServiceImpl {
-    @Autowired
-    private PrivilegeRepository privilegeRepository;
+@RequiredArgsConstructor
+public class PrivilegeServiceImpl implements PrivilegeService {
 
+    private final PrivilegeRepository privilegeRepository;
+
+    @Override
     public List<Privilege> findAll() {
         return privilegeRepository.findAll();
     }
 
+    @Override
     public Privilege findByName(String name) {
         return privilegeRepository.findByName(name);
     }
 
+    @Override
     public CommonFullResponse add(PrivilegeRequest privilegeRequest) {
         Privilege privilege = privilegeRepository.findByName(privilegeRequest.getName());
         if (Objects.nonNull(privilege)) {

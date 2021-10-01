@@ -4,7 +4,7 @@ import com.am.assignment.exception.CustomAccessDeniedHandler;
 import com.am.assignment.filter.JwtRequestFilter;
 import com.am.assignment.serviceImpl.MyUserDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -13,7 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -26,14 +26,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    MyUserDetailsService myUserDetailsService;
-
-
-    @Autowired
-    private JwtRequestFilter jwtRequestFilter;
+    private final MyUserDetailsService myUserDetailsService;
+    private final JwtRequestFilter jwtRequestFilter;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -47,23 +44,9 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .cacheControl();
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/auth-service/**", "/role/**", "/privilege/**", "/image/**", "/upload-image/**",
-                        "/ekadashi-date-time/getAll", "/ekadashi-date-time/get",
-                        "/ekadashi-name/getAll", "/ekadashi-name/get",
-                        "/ekadashi-nobility/getAll", "/ekadashi-nobility/get",
-                        "/left-menu/getAll",
-                        "/ekadashi-menu",
-                        "/god-pic-menu",
-                        "/currency-exchange/**").permitAll()
-                .antMatchers("/feed/**").hasAnyRole("SUPER_ADMIN")
-                .antMatchers("/news/top").hasAnyAuthority("TOP_NEWS")
-                .antMatchers("/news/business").hasAnyAuthority("BUSINESS_NEWS")
-                .antMatchers("/news/politics").hasAnyAuthority("POLITICS_NEWS")
+                .antMatchers("/auth/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-//                .httpBasic()
-//                .authenticationEntryPoint(authenticationEntryPoint())
-//                .exceptionHandling().accessDeniedPage("/403")
                 .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler("Access denied!!"))
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -100,6 +83,6 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
+        return new BCryptPasswordEncoder();
     }
 }

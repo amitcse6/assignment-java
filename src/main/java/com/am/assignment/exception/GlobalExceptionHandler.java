@@ -1,4 +1,4 @@
-package com.am.assignment;
+package com.am.assignment.exception;
 
 
 import com.am.assignment.dto.exception.ExceptionResponse;

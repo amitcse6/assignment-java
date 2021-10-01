@@ -7,6 +7,8 @@ import com.am.assignment.entity.Role;
 import com.am.assignment.exception.CommonException;
 import com.am.assignment.repository.PrivilegeRepository;
 import com.am.assignment.repository.RoleRepository;
+import com.am.assignment.service.RoleService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,20 +19,22 @@ import java.util.Objects;
 
 @Slf4j
 @Service
-public class RoleServiceImpl {
-    @Autowired
-    private RoleRepository roleRepository;
-    @Autowired
-    private PrivilegeRepository privilegeRepository;
+@RequiredArgsConstructor
+public class RoleServiceImpl implements RoleService {
+    private final RoleRepository roleRepository;
+    private final PrivilegeRepository privilegeRepository;
 
+    @Override
     public List<Role> findAll() {
         return roleRepository.findAll();
     }
 
+    @Override
     public Role findByName(String name) {
         return roleRepository.findByName(name);
     }
 
+    @Override
     public CommonFullResponse add(RoleRequest roleRequest) {
         Role role = roleRepository.findByName(roleRequest.getName());
         if (Objects.nonNull(role)) {
