@@ -3,7 +3,7 @@
 #spring.datasource.url<br>
 #<br>
 #2<br>
-#Import 'spring-boot-assignment.postman_collection.json' file into your postman<br>
+#Import 'spring-boot-assignment.postman_collection.json' file into your postman. Create an environment and set 'base_url': 'http://localhost:8899'
 #<br>
 #3<br>
 #Run your project.<br>
