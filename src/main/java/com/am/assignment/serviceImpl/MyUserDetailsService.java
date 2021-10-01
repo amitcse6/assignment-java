@@ -10,6 +10,7 @@ import com.am.assignment.entity.User;
 import com.am.assignment.exception.UserExistsException;
 import com.am.assignment.repository.UserRepository;
 import com.am.assignment.util.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,6 +19,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -28,8 +30,9 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class MyUserDetailsService implements UserDetailsService {
+
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -39,6 +42,9 @@ public class MyUserDetailsService implements UserDetailsService {
 
     @Autowired
     private RoleServiceImpl roleServiceImpl;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
@@ -51,7 +57,7 @@ public class MyUserDetailsService implements UserDetailsService {
 
     public AuthenticationResponse signin(AuthenticationRequest authenticationRequest) throws Exception {
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), passwordEncoder.encode(authenticationRequest.getPassword())));
         } catch (BadCredentialsException e) {
             throw new Exception("Incorrect username or password", e);
         }
@@ -76,7 +82,7 @@ public class MyUserDetailsService implements UserDetailsService {
 
         SignupResponse signupResponse = new SignupResponse();
         signupResponse.setUsername(user.getUsername());
-        signupResponse.setPassword(user.getPassword());
+        signupResponse.setPassword(passwordEncoder.encode(user.getPassword()));
         signupResponse.setPermissions(signupRequest.getPermissions());
         return signupResponse;
     }

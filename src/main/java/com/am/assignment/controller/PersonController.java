@@ -34,4 +34,9 @@ public class PersonController {
     public Page<PersonResponse> findAll(Pageable pageable) {
         return personService.findByPage(pageable);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody PersonRequest personRequest) throws Exception {
+        return personService.update(id, personRequest);
+    }
 }

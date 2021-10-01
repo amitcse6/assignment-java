@@ -28,4 +28,17 @@ public class PersonMapper {
     public PersonResponse getPersonResponse(Person person) {
         return DozerConverter.parseObject(person, PersonResponse.class);
     }
+
+    public Person setPerson(Person person, PersonRequest personRequest) {
+        person.setFirstName(personRequest.getFirstName());
+        person.setLastName(personRequest.getLastName());
+        if (Objects.nonNull(personRequest.getAddress())) {
+            Address address = new Address();
+            address.setCity(personRequest.getAddress().getCity());
+            address.setStreet(personRequest.getAddress().getStreet());
+            address.setZip(personRequest.getAddress().getZip());
+            person.setAddress(address);
+        }
+        return person;
+    }
 }
